@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "PailApp",
+    "slug": "PailApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFDB0C"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.adso.PailApp",
+      "icon": "./assets/icon.png"
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFDB0C"
+      },
+      "package": "com.adso.PailApp",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_MEDIA_IMAGES"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
+      "expo-font",
+      "expo-speech-recognition",
+      "expo-audio",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "La app necesita acceso a tu galería para subir fotos de recetas.",
+          "cameraPermission": "La app necesita acceso a tu cámara para tomar fotos de recetas."
+        }
+      ],
+      "expo-web-browser",
+      "expo-asset",
+      "expo-video"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c7d7ee53-2bbd-48a9-9694-27b9e7f17f0d"
+      }
+    },
+    "owner": "sara_cuellar"
+  }
+}
