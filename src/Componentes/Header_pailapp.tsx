@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import Texto from "./Texto";
 import estilos_global from "../estilos_global";
 
-const Header_pailapp = () => {
+const Header_pailapp = ({cantidad_notificaciones}: any) => {
 
   const navigation = useNavigation<any>();
 
@@ -23,7 +23,20 @@ const Header_pailapp = () => {
           source={require("../Img/icono-campana.png")}
           style={estilos_header_pailapp.icono}
         />
-        <Texto style={estilos_header_pailapp.cantidad_notificaciones}>1</Texto>
+        {cantidad_notificaciones === 0 ?
+        (null) :
+        (
+          <>
+            {cantidad_notificaciones > 9 ?
+            (
+              <Texto style={estilos_header_pailapp.cantidad_notificaciones_2}>+9</Texto>
+            ) : 
+            (
+              <Texto style={estilos_header_pailapp.cantidad_notificaciones}>{cantidad_notificaciones}</Texto>
+            )}
+          </>
+          
+        )}
       </TouchableOpacity>
 
     </View>

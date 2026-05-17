@@ -130,19 +130,32 @@ const Descripcion = ({route, navigation}: Props) => {
                 onBack={() => navigation.goBack()} 
             /> 
             </View>
-    
-    
-                <View style={estilos_publicaciones.container}>
-                    
-                    <Formu_Descripcion_Pasos
-                        plato={plato}
-                        Cancelar_Cambios={() => setModal_visible(true)}
-                        handleChange={handleChange}
-                        Subir_Plato={Subir_Plato}
-                    />
 
-                </View>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
     
+                <ScrollView
+                    style={{ flex: 1, backgroundColor: '#000000' }} 
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    showsVerticalScrollIndicator={true}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <View style={estilos_publicaciones.container}>
+                        
+                        <Formu_Descripcion_Pasos
+                            plato={plato}
+                            Cancelar_Cambios={() => setModal_visible(true)}
+                            handleChange={handleChange}
+                            Subir_Plato={Subir_Plato}
+                        />
+
+                    </View>
+
+                </ScrollView>
+
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }

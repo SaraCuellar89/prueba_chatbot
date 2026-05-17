@@ -12,6 +12,7 @@ import ModalConfirmacion from "../Componentes/ModalConfirmacion";
 import { AuthContext } from "../utils/Auth_Context";
 import { Mensaje_Toast } from "../utils/Mensaje_Toast";
 import Texto from "../Componentes/Texto";
+import Imagen_Completa from "../Componentes/Imagen_Completa";
 
 // Interfaz de los platos
 interface Plato {
@@ -76,8 +77,6 @@ export default function DetallePublicacion({ route, navigation }: any) {
 
     const data = await res.json();
 
-    console.log(data)
-
     if(!data.success) return Mensaje_Toast.info(data.message);
 
     setPlato(data.data.publicacion);
@@ -92,6 +91,14 @@ export default function DetallePublicacion({ route, navigation }: any) {
     Obtener_Info_Plato();
   }, [refetch]);
 
+
+
+  // ================= Funciones y estados para visualizar la imagen completa de una publicacion =================
+  const [imagen_seleccionada, setImagen_seleccionada] = useState<string | null>(null);
+  
+  const Mostrar_Imagen = (archivo: string) => {
+    setImagen_seleccionada(archivo);
+  }
 
 
 
@@ -290,6 +297,13 @@ export default function DetallePublicacion({ route, navigation }: any) {
           />
       )}
 
+      {imagen_seleccionada && (
+        <Imagen_Completa
+            imagen={imagen_seleccionada}
+            Cerrar_Imagen={() => setImagen_seleccionada(null)}
+        />
+      )}
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -306,6 +320,8 @@ export default function DetallePublicacion({ route, navigation }: any) {
 
             {plato && (
               <PublicacionCard
+                navigation={navigation} 
+                
                 key={plato.publicacion_id}
                 id_publicacion={plato.publicacion_id}
                 titulo={plato.publicacion_titulo}
@@ -323,6 +339,8 @@ export default function DetallePublicacion({ route, navigation }: any) {
                 SetNotificacion_reaccion={() => Mostrar_Notificacion("¡Reacción agregada!")}
                 guardado_inicial={plato.ya_guardo}
                 Setnotificacion_guardado={() => Mostrar_Notificacion("¡Receta guardada!")}
+
+                Mostrar_Imagen={Mostrar_Imagen}
               />
             )}
 

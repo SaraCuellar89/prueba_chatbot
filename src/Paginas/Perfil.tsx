@@ -13,6 +13,7 @@ import { Mensaje_Toast } from "../utils/Mensaje_Toast";
 import Texto from "../Componentes/Texto";
 import Notificacion from "../Componentes/Notificacion";
 import ModalConfirmacion from "../Componentes/ModalConfirmacion";
+import Imagen_Completa from "../Componentes/Imagen_Completa";
 
 export interface Plato {
     id_publicacion: number;
@@ -84,6 +85,14 @@ const Perfil = ({ navigation, route }: any) => {
     );
 
 
+    // ================= Funciones y estados para visualizar la imagen completa de una publicacion =================
+    const [imagen_seleccionada, setImagen_seleccionada] = useState<string | null>(null);
+    
+    const Mostrar_Imagen = (archivo: string) => {
+        setImagen_seleccionada(archivo);
+    }
+
+
     // ================= Funciones y estados para eliminar una publicacion =================
     const [id_publicacion, setId_publicacion] = useState<number | null>(null);
 
@@ -126,6 +135,12 @@ const Perfil = ({ navigation, route }: any) => {
             />
         )}
 
+        {imagen_seleccionada && (
+            <Imagen_Completa
+                imagen={imagen_seleccionada}
+                Cerrar_Imagen={() => setImagen_seleccionada(null)}
+            />
+        )}
        
         <ScrollView
             style={{ flex: 1, backgroundColor: '#000000' }}
@@ -166,6 +181,8 @@ const Perfil = ({ navigation, route }: any) => {
                         setId_publicacion(id);
                         setModal_visible(true);
                     }}
+
+                    Mostrar_Imagen={Mostrar_Imagen}
                 />
             )}
         </View>

@@ -24,7 +24,7 @@ const estilos_prueba_chatbot = StyleSheet.create({
     },
     mensaje_bot: {
         backgroundColor: "#FFE979",
-        maxWidth: "70%",
+        
         alignSelf: "flex-start",
         padding: 10,
         borderRadius: 10
@@ -45,6 +45,7 @@ const estilos_prueba_chatbot = StyleSheet.create({
         flexDirection: "row",
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: colores.color_2
     },
     caja_input: {
         flex: 1,

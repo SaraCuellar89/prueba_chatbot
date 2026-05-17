@@ -31,7 +31,7 @@ export default function SubirReceta({ navigation, route }: any) {
       >
       
         <ScrollView
-          style={{ flex: 1, backgroundColor: '#000000' }}
+          style={{ flex: 1, backgroundColor: '#000000' }} 
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={true}
           keyboardShouldPersistTaps="handled"

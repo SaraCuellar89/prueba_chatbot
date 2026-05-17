@@ -15,6 +15,7 @@ import Texto from "../Componentes/Texto";
 import { AuthContext } from "../utils/Auth_Context";
 import { useFocusEffect } from "@react-navigation/native";
 import { Mensaje_Toast } from "../utils/Mensaje_Toast";
+import Imagen_Completa from "../Componentes/Imagen_Completa";
 
 // Intefaz de los platos
 interface Plato {
@@ -42,6 +43,7 @@ export default function MisPlatoss({ navigation }: any) {
   const { usuario } = authContext;
 
 
+
   // ================= Funciones y Estados para mostrar la notificaciones de exito =================
   const [notificacion_exito, setNotificacion_exito] = useState(false);
   const [mensaje_notificacion, setMensaje_notificacion] = useState("");
@@ -59,6 +61,7 @@ export default function MisPlatoss({ navigation }: any) {
     setAccion_pendiente(() => confirmar_fn); 
     setModalVisible(true);
   };
+
 
 
   // ================= Funciones y estados para obtener las publicaciones guardadas del usuario =================
@@ -84,6 +87,17 @@ export default function MisPlatoss({ navigation }: any) {
     }, [usuario.token])
   );
 
+
+
+  // ================= Funciones y estados para visualizar la imagen completa de una publicacion =================
+  const [imagen_seleccionada, setImagen_seleccionada] = useState<string | null>(null);
+  
+  const Mostrar_Imagen = (archivo: string) => {
+    setImagen_seleccionada(archivo);
+  }
+  
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#000000' }}>
 
@@ -103,6 +117,13 @@ export default function MisPlatoss({ navigation }: any) {
           />
       )}
 
+      {imagen_seleccionada && (
+        <Imagen_Completa
+            imagen={imagen_seleccionada}
+            Cerrar_Imagen={() => setImagen_seleccionada(null)}
+        />
+      )}
+
       <ScrollView
         style={{ flex: 1, backgroundColor: '#000000' }}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -117,6 +138,8 @@ export default function MisPlatoss({ navigation }: any) {
                 {platos.map((p) => (
                   <React.Fragment key={p.id_publicacion}>
                     <PublicacionCard
+                      navigation={navigation} 
+
                       key={p.id_publicacion}
                       id_publicacion={p.id_publicacion}
                       guardar_ejemplo={false}
@@ -136,6 +159,8 @@ export default function MisPlatoss({ navigation }: any) {
                       SetNotificacion_reaccion={() => Mostrar_Notificacion("¡Reacción agregada!")}
                       antes_desguardar={Interceptar_Desguardado}  
                       guardado_inicial={p.usuario_ya_guardo}
+
+                      Mostrar_Imagen={Mostrar_Imagen}
                     />
 
                     <TouchableOpacity style={estilos_publicaciones.btn_ingredientes}onPress={() => navigation.navigate('Lista_Ingredientes', { id_publicacion: p.id_publicacion, nombre_publicacion: p.titulo })}>

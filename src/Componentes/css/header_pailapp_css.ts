@@ -44,5 +44,19 @@ export const estilos_header_pailapp = StyleSheet.create({
       color: colores.color_3,
       borderWidth: 2,
       borderColor: colores.color_1
+    },
+    cantidad_notificaciones_2: {
+      position: "absolute",
+      bottom: 0,
+      right: 0,
+      backgroundColor: "#f71707",
+      borderRadius: 40,
+      textAlign: "center",
+      alignSelf: "flex-start",
+      paddingHorizontal: 2,
+      fontSize: 10,
+      color: colores.color_3,
+      borderWidth: 2,
+      borderColor: colores.color_1  
     }
 });

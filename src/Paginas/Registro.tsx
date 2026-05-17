@@ -73,7 +73,9 @@ export default function Registro({ navigation }: any) {
       body: JSON.stringify(form)
     });
 
-    if(!res.ok) return Mensaje_Toast.error("Error al registrar");
+    const data = await res.json();
+
+    if(data.success === false) return Mensaje_Toast.info(data.message);
 
     navigation.navigate("Login", { registro_exitoso: true });
   }

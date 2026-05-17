@@ -13,6 +13,7 @@ const estilos_robot = StyleSheet.create({
 
     caja_texto: {
         alignItems: "center",
+        paddingTop: 20,
     },
     texto: {
         width: "50%",
@@ -37,7 +38,7 @@ const estilos_robot = StyleSheet.create({
         height: height * 0.8,
     },
     robot_pequeno: {
-        width: "60%",
+        width: "50%",
         height: height * 0.5,
     }
 

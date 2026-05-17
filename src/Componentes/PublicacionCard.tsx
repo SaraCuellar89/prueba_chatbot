@@ -7,7 +7,7 @@ import { useReaccionar } from "../Hooks/useReaccionar";
 import { useGuardar } from "../Hooks/useGuardar";
 
 
-export default function PublicacionCard({navigation, id_publicacion, titulo, archivo, descripcion, ingredientes, preparacion, tiempo_preparacion, tipo_tiempo, dificultad, total_reacciones, total_comentarios, fecha_creacion, corazon_inicial, SetNotificacion_reaccion, guardado_inicial, Setnotificacion_guardado, antes_desguardar}: any) {
+export default function PublicacionCard({navigation, id_publicacion, titulo, archivo, descripcion, ingredientes, preparacion, tiempo_preparacion, tipo_tiempo, dificultad, total_reacciones, total_comentarios, fecha_creacion, corazon_inicial, SetNotificacion_reaccion, guardado_inicial, Setnotificacion_guardado, antes_desguardar, Mostrar_Imagen}: any) {
 
   // ================= Estados para boton de ver más =================
   const [ver_mas, setVer_mas] = useState(false);
@@ -111,10 +111,12 @@ export default function PublicacionCard({navigation, id_publicacion, titulo, arc
 
       {/* --- Imagen de portada --- */}
       {archivo && 
-        <Image
-          source={{uri: archivo}}
-          style={estilos_publicacion_card.img_publicacion}
-        />
+        <TouchableOpacity style={{ width: '100%' }} onPress={() => {Mostrar_Imagen(archivo)}}>
+          <Image
+            source={{uri: archivo}}
+            style={estilos_publicacion_card.img_publicacion}
+          />
+        </TouchableOpacity>
       }
 
       {/* --- Dificultad y tiempo --- */}
@@ -162,7 +164,7 @@ export default function PublicacionCard({navigation, id_publicacion, titulo, arc
           </View>
 
           <View style={estilos_publicacion_card.interacciones}>
-            <TouchableOpacity onPress={() => navigation.navigate('DetallePublicacion', {id_publicacion: id_publicacion})}>
+            <TouchableOpacity onPress={() => navigation.push('DetallePublicacion', {id_publicacion: id_publicacion})}>
               <Image
                 source={require("../Img/icono-comentarios.png")}
                 style={estilos_publicacion_card.iconos}

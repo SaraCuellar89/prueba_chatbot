@@ -12,24 +12,39 @@ const Prueba_ChatBot = ({setCambiar_tamano}: any) => {
 
 
     // ================= Array de simulacion de animacion =================
-    const conversacion = [
-        { id: "1", tipo: "bot", texto: "Hola, ¿En qué te puedo ayudar?" },
-        { id: "2", tipo: "usuario", texto: "Hola, me gustaría que me recomiendes un plato típico de Colombia" },
-        { id: "3", tipo: "bot", texto: "¡Claro! Te recomiendo el Ajiaco, una sopa tradicional bogotana hecha con pollo, tres tipos de papa y guascas. ¿Te gustaría saber cómo prepararlo?" },
-        { id: "4", tipo: "usuario", texto: "Sí, ¿cuáles son los ingredientes?" },
-        { id: "5", tipo: "bot", texto: "Los ingredientes principales son: pollo, papa criolla, papa pastusa, papa nevada, mazorca, guascas, crema de leche y alcaparras." }
-    ];
+    const intenciones: Record<string, string> = {
+        "feliz":        "¡Me alegra que estés de buen humor! 😄 ¿Cocinamos algo especial hoy?",
+        "triste":       "Lo siento 😢 Te recomiendo un chocolate caliente para animarte.",
+        "hambre":       "¡Vamos a cocinar algo rico! ¿Qué tienes en la nevera?",
+        "receta":       "¡Claro! ¿Qué ingredientes tienes disponibles?",
+        "rapido":       "Tengo recetas listas en menos de 15 minutos ⚡ ¿Te interesa?",
+        "saludable":    "¡Buena decisión! Te recomiendo una ensalada de quinoa con aguacate 🥗",
+        "dulce":        "¿Qué tal unas galletas de avena o un brownie? 🍪",
+        "salado":       "Tengo recetas de snacks salados muy fáciles. ¿Quieres verlas?",
+        "hola":         "¡Hola! ¿En qué te puedo ayudar hoy? 👋",
+        "gracias":      "¡Con gusto! Si necesitas algo más, aquí estoy 😊",
+    };
 
     // ================= Funciones y estado para hablar con el chatbot por texto =================
     const [mostrar, setMostrar] = useState(false);
 
     const [texto, setTexto] = useState("");
+    const [conversacion, setConversacion] = useState<{id: string, tipo: string, texto: string}[]>([]);
 
     const enviar = () => {
-        if (texto.trim() !== "") {  
-            setMostrar(true)
+        if (texto.trim() !== "") {
+            const intencion = intenciones[texto.trim().toLowerCase()];
+            const respuesta = intencion ?? "No entendí muy bien, ¿puedes intentar con otra palabra?";
+
+            setConversacion(prev => [
+                ...prev,
+                { id: Date.now().toString(),        tipo: "usuario", texto: texto.trim() },
+                { id: Date.now().toString() + "b",  tipo: "bot",     texto: respuesta },
+            ]);
+
+            setMostrar(true);
             setCambiar_tamano(true);
-            setTexto("")
+            setTexto("");
         }
     }
 
@@ -80,44 +95,49 @@ const Prueba_ChatBot = ({setCambiar_tamano}: any) => {
             )}
 
             {/* Input */}
-            <View style={estilos_prueba_chatbot.contenedor_input}>
-                <View style={estilos_prueba_chatbot.caja_input}>
-                    {mostrar_opcion_hablar ? 
-                    (
-                        <>
-                            <View style={estilos_prueba_chatbot.caja_hablar}>
-                                <LottieView
-                                    source={require("../Img/voice.json")}
-                                    autoPlay
-                                    loop
-                                    style={estilos_prueba_chatbot.animacion_hablar} 
-                                />
-                            </View>
+   
+            {mostrar_opcion_hablar ? 
+            (
+                <View style={estilos_prueba_chatbot.contenedor_input}>
+                    <View style={estilos_prueba_chatbot.caja_hablar}>
+                        <LottieView
+                            source={require("../Img/voice.json")}
+                            autoPlay
+                            loop
+                            style={estilos_prueba_chatbot.animacion_hablar} 
+                        />
+                    </View>
 
-                            <TouchableOpacity onPress={hablar}>
-                                <Image source={require("../Img/icono-escuchar.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_hablar}/>
-                            </TouchableOpacity>
-                        </>
-                    ) : 
-                    (
-                        <>
-                            <TextInput 
-                                style={estilos_prueba_chatbot.input}
-                                value={texto}           
-                                onChangeText={setTexto} 
-                            />
+                    <TouchableOpacity onPress={hablar}>
+                        <Image source={require("../Img/icono-escuchar.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_hablar}/>
+                    </TouchableOpacity>
 
-                            <TouchableOpacity onPress={hablar}>
-                                <Image source={require("../Img/icono-micro.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_hablar}/>
-                            </TouchableOpacity>
-                        </>
-                    )}
+                    <TouchableOpacity onPress={enviar}>
+                        <Image source={require("../Img/icono-enviado.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_enviar}/>
+                    </TouchableOpacity>
                 </View>
-                
-                <TouchableOpacity onPress={enviar}>
-                    <Image source={require("../Img/icono-enviado.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_enviar}/>
-                </TouchableOpacity>
-            </View>
+            ) : 
+            (
+                <View style={estilos_prueba_chatbot.contenedor_input}>
+                    <View style={estilos_prueba_chatbot.caja_input}>
+                        <TextInput 
+                            style={estilos_prueba_chatbot.input}
+                            value={texto}           
+                            onChangeText={setTexto} 
+                            placeholder="Escribe algo..." 
+                            placeholderTextColor={"grey"} 
+                        />
+
+                        <TouchableOpacity onPress={hablar}>
+                            <Image source={require("../Img/icono-micro.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_hablar}/>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity onPress={enviar}>
+                        <Image source={require("../Img/icono-enviado.png")} resizeMode="contain" style={estilos_prueba_chatbot.icono_enviar}/>
+                    </TouchableOpacity>
+                </View>
+            )}
         </View>
     )
 }

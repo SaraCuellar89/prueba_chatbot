@@ -6,7 +6,7 @@ import PublicacionCard from "./PublicacionCard";
 import Opciones from "./Opciones";
 
 
-const Platos_Perfil = ({navigation, platos, Mostrar_Notificacion, Eliminar_Publicacion}: any) => {
+const Platos_Perfil = ({navigation, platos, Mostrar_Notificacion, Eliminar_Publicacion, Mostrar_Imagen}: any) => {
 
     // ================= Estados abrir la caja de opciones (editar/eliminar) =================
     const [plato_opciones, setPlato_opciones] = useState<number | null>(null);
@@ -47,6 +47,8 @@ const Platos_Perfil = ({navigation, platos, Mostrar_Notificacion, Eliminar_Publi
                             SetNotificacion_reaccion={() => Mostrar_Notificacion("¡Reacción agregada!")}
                             guardado_inicial={p.usuario_ya_guardo}
                             Setnotificacion_guardado={() => Mostrar_Notificacion("¡Receta guardada!")}
+
+                            Mostrar_Imagen={Mostrar_Imagen}
                         />
                     </View>
 
