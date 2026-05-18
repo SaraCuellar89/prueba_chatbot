@@ -95,40 +95,50 @@ const Formu_Lista_Ingredientes = ({ ingredientes_iniciales = [], id_publicacion 
 
     // ================= Funciones y estados para marcar o desmarcar un ingrediente =================
     const Marcar_Ingrediente = async (id_ingrediente: number | undefined) => {
-        if (!id_ingrediente) return;
+        try {
+            if (!id_ingrediente) return;
         
-        const res = await fetch(`http://35.174.135.238/ingredientes/marcar/${id_ingrediente}`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${usuario.token}` }
-        });
+            const res = await fetch(`http://35.174.135.238/ingredientes/marcar/${id_ingrediente}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${usuario.token}` }
+            });
 
-        const data = await res.json();
-        if (!data.success) return Mensaje_Toast.info(data.message);
+            const data = await res.json();
+            if (!data.success) return Mensaje_Toast.info(data.message);
+        } catch (error) {
+            console.error('Error marcando/desmarcando ingrediente:', error);
+            Mensaje_Toast.error('No se pudo marcar/desmarcar el ingrediente');
+        }
     }
 
 
     // ================= Funciones y estados para guardar la lista de ingredientes =================
     const Guardar_Ingredientes = async () => {
-        const todos = lineaActiva.trim() !== ""
-            ? [...items, { texto: lineaActiva.trim(), marcado: false }]
-            : items;
+        try {
+            const todos = lineaActiva.trim() !== ""
+                ? [...items, { texto: lineaActiva.trim(), marcado: false }]
+                : items;
 
-        const res = await fetch(`http://35.174.135.238/ingredientes/agregar/${id_publicacion}`, {
-            method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${usuario.token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                ingredientes: todos.map(i => ({ nombre: i.texto, obtenido: i.marcado ? 1 : 0 }))
-            })
-        });
+            const res = await fetch(`http://35.174.135.238/ingredientes/agregar/${id_publicacion}`, {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${usuario.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ingredientes: todos.map(i => ({ nombre: i.texto, obtenido: i.marcado ? 1 : 0 }))
+                })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (!data.success) return Mensaje_Toast.info(data.message);
+            if (!data.success) return Mensaje_Toast.info(data.message);
 
-        Mensaje_Toast.info("¡Lista guardada!");
+            Mensaje_Toast.info("¡Lista guardada!");
+        } catch (error) {
+            console.error('Error guardando los cambios:', error);
+            Mensaje_Toast.error('No se pudo guardar los combios');
+        }
     }
 
 

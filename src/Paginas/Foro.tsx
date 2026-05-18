@@ -73,17 +73,22 @@ export default function Foro({ navigation, route }: any) {
   useFocusEffect(
     useCallback(() => {
       const Obtener_Todos_Platos = async () => {
-        const res = await fetch(`http://35.174.135.238/filtros/${filtro}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${usuario.token}`
-          }
-        });
+        try {
+          const res = await fetch(`http://35.174.135.238/filtros/${filtro}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${usuario.token}`
+            }
+          });
 
-        const data = await res.json();
-        if(!data.success) return Mensaje_Toast.info(data.message);
+          const data = await res.json();
+          if(!data.success) return Mensaje_Toast.info(data.message);
 
-        setPlatos(data.data);
+          setPlatos(data.data);
+        } catch (error) {
+          console.error('Error obtenindo los platos:', error);
+          Mensaje_Toast.error('No se pudo obtener los platos');
+        }
       };
 
       Obtener_Todos_Platos();

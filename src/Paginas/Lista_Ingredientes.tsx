@@ -25,21 +25,28 @@ const Lista_Ingredientes = ({ route, navigation }: any) => {
 
     useEffect(() => {
         const Obtener_Ingredientes  = async () => {
-            const res = await fetch(`http://35.174.135.238/ingredientes/todos/${id_publicacion}`, {
-              method: 'GET',
-              headers: {
-                'Authorization': `Bearer ${usuario.token}`
-              }
-            });
-        
-            const data = await res.json();
-            if(!data.success) return Mensaje_Toast.info(data.message);
+            try {
+                const res = await fetch(`http://35.174.135.238/ingredientes/todos/${id_publicacion}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${usuario.token}`
+                    }
+                });
+            
+                const data = await res.json();
+                if(!data.success) return Mensaje_Toast.info(data.message);
 
-            setIngredientes(data.data);
+                setIngredientes(data.data);
+            } catch (error) {
+                console.error('Error obteniendo los ingredientes:', error);
+                Mensaje_Toast.error('No se pudo obtener los ingredientes');
+            }
           };
 
-          Obtener_Ingredientes()
+          Obtener_Ingredientes();
     }, [])
+
+    
 
     return(
         <SafeAreaView style={{ flex: 1, backgroundColor: colores.color_4 }}>

@@ -48,6 +48,9 @@ export default function Chatbot({navigation}: any) {
   const [cambiar_tamano, setCambiar_tamano] = useState(false);
   
 
+  const [intencion, setIntencion] = useState<string | null>(null);
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#000000" }}>
       <View style={{ backgroundColor: colores.color_2 }}>
@@ -66,6 +69,7 @@ export default function Chatbot({navigation}: any) {
       <View style={{ backgroundColor: colores.color_2 }}>
         <Robot 
           cambiar_tamano={cambiar_tamano} 
+          intencion={intencion} 
         />
       </View>
 
@@ -80,6 +84,7 @@ export default function Chatbot({navigation}: any) {
         <View style={estilos_publicaciones.container}>
           <Prueba_ChatBot 
             setCambiar_tamano={setCambiar_tamano} 
+            onIntencion={setIntencion}
           />
         </View>
       </KeyboardAwareScrollView>

@@ -12,6 +12,8 @@ export default function Carga({ navigation }: any) {
   if (!authContext) throw new Error("AuthContext no está disponible");
   const { usuario, cargando } = authContext;
 
+
+
   // ================= Funcion para cambiar de vista despues de 2.5 segudnos =================
   useEffect(() => {
 
@@ -30,6 +32,8 @@ export default function Carga({ navigation }: any) {
 
     return () => clearTimeout(timer);
   }, [cargando]);
+
+  
 
   return (
     <View style={[estilos_global.fondo_1, estilos_pantalla_carga.contenedor]}>

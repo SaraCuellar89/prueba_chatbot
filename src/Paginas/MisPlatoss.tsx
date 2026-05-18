@@ -68,17 +68,22 @@ export default function MisPlatoss({ navigation }: any) {
   const [platos, setPlatos] = useState<Plato[]>([]);
   
   const Obtener_Todos_Platos = async () => {
-    const res = await fetch(`http://35.174.135.238/guardados/listar`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${usuario.token}`
-      }
-    });
+    try {
+      const res = await fetch(`http://35.174.135.238/guardados/listar`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${usuario.token}`
+        }
+      });
 
-    const data = await res.json();
-    if(!data.success) return Mensaje_Toast.info(data.message);
+      const data = await res.json();
+      if(!data.success) return Mensaje_Toast.info(data.message);
 
-    setPlatos(data.data.platos_guardados);
+      setPlatos(data.data.platos_guardados);
+    } catch (error) {
+      console.error('Error obteniendo los platos:', error);
+      Mensaje_Toast.error('No se pudo obtener los platos');
+    }
   };
 
   useFocusEffect(

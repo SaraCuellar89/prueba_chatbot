@@ -47,44 +47,48 @@ const Datos_Adicionales = ({ navigation }: any) => {
     
     // Envio de los datos
     const Registrar_Adicionales = async () => {
+        try {
+            // Validaciones
+            const { edad, peso, altura } = form;
 
-        // Validaciones
-        const { edad, peso, altura } = form;
+            const edadNum = Number(edad);
+            const pesoNum = Number(peso);
+            const alturaNum = Number(altura);
 
-        const edadNum = Number(edad);
-        const pesoNum = Number(peso);
-        const alturaNum = Number(altura);
+            if (!edad || !peso || !altura) return Mensaje_Toast.error("Todos los campos son obligatorios");
+            if (isNaN(edadNum) || isNaN(pesoNum) || isNaN(alturaNum)) return Mensaje_Toast.error("Solo se permiten valores numéricos");
+            if (edadNum < 10 || edadNum > 120) return Mensaje_Toast.error("Edad fuera de rango válida (10-120)");
+            if (pesoNum < 20 || pesoNum > 300) return Mensaje_Toast.error("Peso fuera de rango válido (20-300 kg)");
+            if (alturaNum < 0.5 || alturaNum > 2.5) return Mensaje_Toast.error("Altura fuera de rango válida (0.50 - 2.50 m)");
+            
 
-        if (!edad || !peso || !altura) return Mensaje_Toast.error("Todos los campos son obligatorios");
-        if (isNaN(edadNum) || isNaN(pesoNum) || isNaN(alturaNum)) return Mensaje_Toast.error("Solo se permiten valores numéricos");
-        if (edadNum < 10 || edadNum > 120) return Mensaje_Toast.error("Edad fuera de rango válida (10-120)");
-        if (pesoNum < 20 || pesoNum > 300) return Mensaje_Toast.error("Peso fuera de rango válido (20-300 kg)");
-        if (alturaNum < 0.5 || alturaNum > 2.5) return Mensaje_Toast.error("Altura fuera de rango válida (0.50 - 2.50 m)");
-        
+            const res = await fetch('http://35.174.135.238/usuarios/registrar_datos_adicionales', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${usuario.token}`
+                },
+                body: JSON.stringify(form)
+            });
 
-        const res = await fetch('http://35.174.135.238/usuarios/registrar_datos_adicionales', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${usuario.token}`
-            },
-            body: JSON.stringify(form)
-        });
+            const data = await res.json();
 
-        const data = await res.json();
-
-        if(data.success === false) return Mensaje_Toast.info(data.message);
+            if(data.success === false) return Mensaje_Toast.info(data.message);
 
 
-        // Actualizar contexto con los nuevos datos
-        const usuario_actualizado = { ...usuario, edad: form.edad, peso: form.peso, altura: form.altura, sexo: form.sexo };
-        setUsuario(usuario_actualizado);                             
-        await AsyncStorage.setItem("usuario", JSON.stringify(usuario_actualizado));
+            // Actualizar contexto con los nuevos datos
+            const usuario_actualizado = { ...usuario, edad: form.edad, peso: form.peso, altura: form.altura, sexo: form.sexo };
+            setUsuario(usuario_actualizado);                             
+            await AsyncStorage.setItem("usuario", JSON.stringify(usuario_actualizado));
 
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Chatbot" }],
-        });
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "Chatbot" }],
+            });
+        } catch (error) {
+            console.error('Error registrando datos adicionales:', error);
+            Mensaje_Toast.error('No se pudo registrar datos adicionales');
+        }
     }
 
 

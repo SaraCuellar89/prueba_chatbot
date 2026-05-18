@@ -27,40 +27,61 @@ const Notificaciones = ({navigation}: any) => {
     // ================= Funciones y estados para obtener todas las notificaciones del usuario =================
     const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
 
+    const [cargando, setCargando] = useState(true);
+
     const Obtener_Notificaciones = async () => {
-        const res = await fetch(`http://35.174.135.238/notificaciones/todas`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${usuario.token}` }
-        });
+        try {
+            setCargando(true);
 
-        const data = await res.json();
+            const res = await fetch(`http://35.174.135.238/notificaciones/todas`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${usuario.token}` }
+            });
 
-        if(data.data?.info_notificaciones) {
-            setNotificaciones(data.data.info_notificaciones);
-        } else {
-            setNotificaciones([]);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const data = await res.json();
+
+            if (data.data?.info_notificaciones) {
+                setNotificaciones(data.data.info_notificaciones);
+            } else {
+                setNotificaciones([]);
+            }
+
+        } catch (error) {
+            console.error('Error obteniendo notificaciones:', error);
+            Mensaje_Toast.error('No se pudo cargar las notificaciones');
+        } finally {
+            setCargando(false);
         }
     }
 
     useEffect(() => {
-        Obtener_Notificaciones()
-    }, [])
+        if (usuario?.token) {
+            Obtener_Notificaciones();
+        }
+    }, [usuario?.token]);
+    
 
 
     // ================= Funciones y estados para eliminar una notificacion =================
     const Eliminar_Notificacion = async (id_notificacion: number) => {
-        const res = await fetch(`http://35.174.135.238/notificaciones/eliminar_una/${id_notificacion}`, {
-            method: "DELETE",
-            headers: {
-                'Authorization': `Bearer ${usuario.token}`
-            }
-        });
+        try {
+            const res = await fetch(`http://35.174.135.238/notificaciones/eliminar_una/${id_notificacion}`, {
+                method: "DELETE",
+                headers: { 'Authorization': `Bearer ${usuario.token}` }
+            });
 
-        const data = await res.json();
-        
-        if(!data.success) return Mensaje_Toast.info(data.message);
+            const data = await res.json();
+            
+            if (!data.success) return Mensaje_Toast.info(data.message);
 
-        Obtener_Notificaciones();
+            Obtener_Notificaciones();
+
+        } catch (error) {
+            console.error('Error eliminando notificación:', error);
+            Mensaje_Toast.error('No se pudo eliminar la notificación');
+        }
     }
 
     return(
@@ -83,11 +104,11 @@ const Notificaciones = ({navigation}: any) => {
 
                 <View style={estilos_publicaciones.container}>
 
-                    {notificaciones.length === 0 ? 
-                    (
+                    {cargando ? (
+                        <Texto>Cargando...</Texto>
+                    ) : notificaciones.length === 0 ? (
                         <Texto style={estilos_publicaciones.texto_vacio}>No tienes notificaciones</Texto>
-                    ) : 
-                    (
+                    ) : (
                         <>
                             {notificaciones.map((n) => (
                                 <Tarjeta_Notificaciones

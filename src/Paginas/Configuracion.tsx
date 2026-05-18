@@ -61,19 +61,26 @@ export default function Configuracion({navigation, route}: any) {
 
   // ================= Funciones y estados para eliminar la cuenta =================
   const Eliminar_Cuenta = async () => {
-    const res = await fetch(`http://35.174.135.238/usuarios/eliminar_cuenta`, {
-      method: "DELETE",
-      headers: {
-          'Authorization': `Bearer ${usuario.token}`
-      }
-    });
+    try {
+      const res = await fetch(`http://35.174.135.238/usuarios/eliminar_cuenta`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${usuario.token}`
+        }
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if(!data.success) return Mensaje_Toast.info(data.message);
+      if(!data.success) return Mensaje_Toast.info(data.message);
 
-    navigation.navigate("Inicio") 
+    navigation.navigate("Inicio");
+    } catch (error) {
+      console.error('Error eliminando la cuenta:', error);
+      Mensaje_Toast.error('No se pudo eliminar la cuenta');
+    }
   }
+
+  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#000000' }}>

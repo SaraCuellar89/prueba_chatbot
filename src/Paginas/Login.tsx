@@ -53,47 +53,51 @@ export default function Login({ navigation, route }: any) {
 
   // Envio de los datos
   const Iniciar_Sesion = async () => {
+    try {
+      // Validaciones
+      const { correo, contrasena } = form;
+      if (!correo || !contrasena) return Mensaje_Toast.error("Todos los campos son obligatorios");
 
-    // Validaciones
-    const { correo, contrasena } = form;
-    if (!correo || !contrasena) return Mensaje_Toast.error("Todos los campos son obligatorios");
-
-    const res = await fetch('http://35.174.135.238/usuarios/iniciar_sesion', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(form)
-    });
-
-    const data = await res.json();
-
-    if(data.success === false) return Mensaje_Toast.info(data.message);
-
-    // Guardar la informacion del usuario
-    await AsyncStorage.setItem("usuario", JSON.stringify(data.data));
-    setUsuario(data.data);
-
-    const token_fcm = await obtener_token_fcm();
-
-    if (token_fcm) {
-      await fetch('http://35.174.135.238/tokenFCM/guardar', {
-        method: 'POST',
+      const res = await fetch('http://35.174.135.238/usuarios/iniciar_sesion', {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${data.data.token}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ fcm_token: token_fcm })
+        body: JSON.stringify(form)
       });
-    }
 
-    if (data.data.altura == null || data.data.peso == null || data.data.edad == null) navigation.navigate("Datos_Adicionales");
-    else {
-      // Evita que el usuario se devuelva
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Chatbot" }],
-      });
+      const data = await res.json();
+
+      if(data.success === false) return Mensaje_Toast.info(data.message);
+
+      // Guardar la informacion del usuario
+      await AsyncStorage.setItem("usuario", JSON.stringify(data.data));
+      setUsuario(data.data);
+
+      const token_fcm = await obtener_token_fcm();
+
+      if (token_fcm) {
+        await fetch('http://35.174.135.238/tokenFCM/guardar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${data.data.token}`
+          },
+          body: JSON.stringify({ fcm_token: token_fcm })
+        });
+      }
+
+      if (data.data.altura == null || data.data.peso == null || data.data.edad == null) navigation.navigate("Datos_Adicionales");
+      else {
+        // Evita que el usuario se devuelva
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Chatbot" }],
+        });
+      }
+    } catch (error) {
+      console.error('Error iniciando sesion (local):', error);
+      Mensaje_Toast.error('No se pudo iniciar sesión');
     } 
   }
 
@@ -101,51 +105,56 @@ export default function Login({ navigation, route }: any) {
 
   // ================= Funciones y estados para iniciar sesion con google =================
   const Iniciar_Sesion_Google = async () => {
-    await GoogleSignin.hasPlayServices();
-    await GoogleSignin.signOut(); 
+    try {
+      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signOut(); 
 
-    const userInfo = await GoogleSignin.signIn();
-    const idToken = userInfo.data?.idToken;
+      const userInfo = await GoogleSignin.signIn();
+      const idToken = userInfo.data?.idToken;
 
-    if (!idToken) return Mensaje_Toast.info('Error al obtener token de Google');
+      if (!idToken) return Mensaje_Toast.info('Error al obtener token de Google');
 
-    const res = await fetch('http://35.174.135.238/usuarios/iniciar_sesion_google', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ token: idToken })
-    });
-
-    const data = await res.json();
-
-    if(data.success === false) return Mensaje_Toast.info(data.message);
-
-    // Guardar la informacion del usuario
-    await AsyncStorage.setItem("usuario", JSON.stringify(data.data));
-    setUsuario(data.data);
-
-    const token_fcm = await obtener_token_fcm();
-
-    if (token_fcm) {
-      await fetch('http://35.174.135.238/tokenFCM/guardar', {
-        method: 'POST',
+      const res = await fetch('http://35.174.135.238/usuarios/iniciar_sesion_google', {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${data.data.token}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ fcm_token: token_fcm })
+        body: JSON.stringify({ token: idToken })
       });
-    }
 
-    if (data.data.altura == null || data.data.peso == null || data.data.edad == null) navigation.navigate("Datos_Adicionales");
-    else {
-      // Evita que el usuario se devuelva
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Chatbot" }],
-      });
-    }  
+      const data = await res.json();
+
+      if(data.success === false) return Mensaje_Toast.info(data.message);
+
+      // Guardar la informacion del usuario
+      await AsyncStorage.setItem("usuario", JSON.stringify(data.data));
+      setUsuario(data.data);
+
+      const token_fcm = await obtener_token_fcm();
+
+      if (token_fcm) {
+        await fetch('http://35.174.135.238/tokenFCM/guardar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${data.data.token}`
+          },
+          body: JSON.stringify({ fcm_token: token_fcm })
+        });
+      }
+
+      if (data.data.altura == null || data.data.peso == null || data.data.edad == null) navigation.navigate("Datos_Adicionales");
+      else {
+        // Evita que el usuario se devuelva
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Chatbot" }],
+        });
+      }  
+    } catch (error) {
+      console.error('Error iniciando sesion (google):', error);
+      Mensaje_Toast.error('No se pudo iniciar sesion con google');
+    }
   }
 
 

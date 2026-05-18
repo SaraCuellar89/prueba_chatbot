@@ -18,7 +18,7 @@ export default function Editar_Cuenta({ navigation }: any) {
   if (!authContext) throw new Error("AuthContext no está disponible");
   const { usuario, setUsuario } = authContext;
 
-  console.log(usuario)
+  
 
   // ================= Funciones y Estados para mostrar la notificaciones de exito =================
   const [notificacion_exito, setNotificacion_exito] = useState(false);
@@ -79,60 +79,64 @@ export default function Editar_Cuenta({ navigation }: any) {
 
   // Funcion de editar datos
   const Editar_Cuenta = async () => {
+    try {
+      // Validaciones
+      const { nombre_usuario, correo, avatar, edad, peso, altura } = form;
+      const emailRegex = /^[^@\s]+@[^@\s]+\.(com)$/;
 
-    // Validaciones
-    const { nombre_usuario, correo, avatar, edad, peso, altura } = form;
-    const emailRegex = /^[^@\s]+@[^@\s]+\.(com)$/;
+      if (!nombre_usuario || !correo || !avatar || !edad || !peso || !altura) return Mensaje_Toast.error("Todos los campos son obligatorios");
+      if (nombre_usuario.length < 5) return Mensaje_Toast.error("El nombre de usuario debe tener minimo 5 caracteres"); 
+      if (!emailRegex.test(correo)) return Mensaje_Toast.error("Correo invalido");
 
-    if (!nombre_usuario || !correo || !avatar || !edad || !peso || !altura) return Mensaje_Toast.error("Todos los campos son obligatorios");
-    if (nombre_usuario.length < 5) return Mensaje_Toast.error("El nombre de usuario debe tener minimo 5 caracteres"); 
-    if (!emailRegex.test(correo)) return Mensaje_Toast.error("Correo invalido");
+      const edadNum = Number(edad);
+      const pesoNum = Number(peso);
+      const alturaNum = Number(altura);
 
-    const edadNum = Number(edad);
-    const pesoNum = Number(peso);
-    const alturaNum = Number(altura);
+      if (!edad || !peso || !altura) return Mensaje_Toast.error("Todos los campos son obligatorios");
+      if (isNaN(edadNum) || isNaN(pesoNum) || isNaN(alturaNum)) return Mensaje_Toast.error("Solo se permiten valores numéricos");
+      if (edadNum < 10 || edadNum > 120) return Mensaje_Toast.error("Edad fuera de rango válida (10-120)");
+      if (pesoNum < 20 || pesoNum > 300) return Mensaje_Toast.error("Peso fuera de rango válido (20-300 kg)");
+      if (alturaNum < 0.5 || alturaNum > 2.5) return Mensaje_Toast.error("Altura fuera de rango válida (0.50 - 2.50 m)");
 
-    if (!edad || !peso || !altura) return Mensaje_Toast.error("Todos los campos son obligatorios");
-    if (isNaN(edadNum) || isNaN(pesoNum) || isNaN(alturaNum)) return Mensaje_Toast.error("Solo se permiten valores numéricos");
-    if (edadNum < 10 || edadNum > 120) return Mensaje_Toast.error("Edad fuera de rango válida (10-120)");
-    if (pesoNum < 20 || pesoNum > 300) return Mensaje_Toast.error("Peso fuera de rango válido (20-300 kg)");
-    if (alturaNum < 0.5 || alturaNum > 2.5) return Mensaje_Toast.error("Altura fuera de rango válida (0.50 - 2.50 m)");
+      // Envio de los datos
+      const res = await fetch('http://35.174.135.238/usuarios/editar_cuenta', {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${usuario.token}`
+        },
+        body: JSON.stringify(form)
+      });
 
-    // Envio de los datos
-    const res = await fetch('http://35.174.135.238/usuarios/editar_cuenta', {
-      method: "PUT",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${usuario.token}`
-      },
-      body: JSON.stringify(form)
-    });
+      const data = await res.json();
 
-    const data = await res.json();
+      if (!data.success) return Mensaje_Toast.info(data.message);
 
-    if (!data.success) return Mensaje_Toast.info(data.message);
+      // Actualizar contexto con los nuevos datos
+      const usuario_actualizado = { 
+        ...usuario, 
+        nombre: form.nombre_usuario, 
+        correo: form.correo,
+        avatar: form.avatar,
+        sexo: form.sexo,
+        edad: form.edad,
+        peso: form.peso,
+        altura: form.altura
+      };
+      setUsuario(usuario_actualizado);                             
+      await AsyncStorage.setItem("usuario", JSON.stringify(usuario_actualizado));
 
-    // Actualizar contexto con los nuevos datos
-    const usuario_actualizado = { 
-      ...usuario, 
-      nombre: form.nombre_usuario, 
-      correo: form.correo,
-      avatar: form.avatar,
-      sexo: form.sexo,
-      edad: form.edad,
-      peso: form.peso,
-      altura: form.altura
-    };
-    setUsuario(usuario_actualizado);                             
-    await AsyncStorage.setItem("usuario", JSON.stringify(usuario_actualizado));
-
-    navigation.reset({
-      index: 1,
-      routes: [
-        { name: "Chatbot" },
-        { name: "Configuracion", params: { cuenta_editada: true } },
-      ],
-    });
+      navigation.reset({
+        index: 1,
+        routes: [
+          { name: "Chatbot" },
+          { name: "Configuracion", params: { cuenta_editada: true } },
+        ],
+      });
+    } catch (error) {
+      console.error('Error editando la cuenta:', error);
+      Mensaje_Toast.error('No se pudo editar la cuenta');
+    }
   }
 
 

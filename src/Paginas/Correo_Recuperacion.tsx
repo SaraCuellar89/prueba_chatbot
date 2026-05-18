@@ -23,26 +23,30 @@ const Correo_Recuperacion = ({navigation}: any) => {
 
     // Envio de los datos
     const Solicitar_Recuperacion = async () => {
+        try {
+            // Validaciones
+            const emailRegex = /^[^@\s]+@[^@\s]+\.(com)$/;
 
-        // Validaciones
-        const emailRegex = /^[^@\s]+@[^@\s]+\.(com)$/;
+            if (!correo) return Mensaje_Toast.error("Llene el campo solicitado");
+            if (!emailRegex.test(correo)) return Mensaje_Toast.error("Correo invalido");
 
-        if (!correo) return Mensaje_Toast.error("Llene el campo solicitado");
-        if (!emailRegex.test(correo)) return Mensaje_Toast.error("Correo invalido");
+            const res = await fetch('http://35.174.135.238/usuarios/contrasena_olvidada', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ correo })
+            });
+            
+            const data = await res.json();
 
-        const res = await fetch('http://35.174.135.238/usuarios/contrasena_olvidada', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ correo })
-        });
-        
-        const data = await res.json();
+            if(!data.success) return Mensaje_Toast.info(data.message);
 
-        if(!data.success) return Mensaje_Toast.info(data.message);
-
-        navigation.navigate("Cambiar_Contrasena");
+            navigation.navigate("Cambiar_Contrasena");
+        } catch (error) {
+            console.error('Error solicitando recuperacion:', error);
+            Mensaje_Toast.error('No se pudo solicitar recuperación');
+        }
     }
 
 

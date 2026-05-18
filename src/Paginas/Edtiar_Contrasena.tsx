@@ -41,34 +41,38 @@ export default function Editar_Contrasena({ navigation }: any) {
 
   // Envio de los datos
   const Editar_Contrasena = async () => {
+    try {
+      // Validaciones
+      const { contrasena_actual, contrasena_nueva, confirmacion_contrasena} = form;
+      if (!contrasena_actual || !contrasena_nueva || !confirmacion_contrasena) return Mensaje_Toast.error("Todos los campos son obligatorios");
+      if(contrasena_nueva.trim().length < 5){
+          return Mensaje_Toast.error("La contraseña debe tener al menos 5 caracteres");
+      }
 
-    // Validaciones
-    const { contrasena_actual, contrasena_nueva, confirmacion_contrasena} = form;
-    if (!contrasena_actual || !contrasena_nueva || !confirmacion_contrasena) return Mensaje_Toast.error("Todos los campos son obligatorios");
-    if(contrasena_nueva.trim().length < 5){
-        return Mensaje_Toast.error("La contraseña debe tener al menos 5 caracteres");
+      const res = await fetch('http://35.174.135.238/usuarios/editar_contrasena', {
+      method: "PUT",
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${usuario.token}`
+      },
+      body: JSON.stringify(form)
+      });
+
+      const data = await res.json();
+
+      if(data.success === false) return Mensaje_Toast.info(data.message);
+
+      navigation.reset({
+        index: 1,
+        routes: [
+          { name: "Chatbot" },
+          { name: "Configuracion", params: { contrasena_editada: true } },
+        ],
+      });
+    } catch (error) {
+      console.error('Error editando la contraseña:', error);
+      Mensaje_Toast.error('No se pudo editar la contraseña');
     }
-
-    const res = await fetch('http://35.174.135.238/usuarios/editar_contrasena', {
-    method: "PUT",
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${usuario.token}`
-    },
-    body: JSON.stringify(form)
-    });
-
-    const data = await res.json();
-
-    if(data.success === false) return Mensaje_Toast.info(data.message);
-
-    navigation.reset({
-      index: 1,
-      routes: [
-        { name: "Chatbot" },
-        { name: "Configuracion", params: { contrasena_editada: true } },
-      ],
-    });
   }
 
 

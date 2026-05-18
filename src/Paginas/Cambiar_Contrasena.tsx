@@ -41,29 +41,34 @@ const Cambiar_Contrasena = ({navigation}: any) => {
     // Envio de los datos
     const Restablecer_Contrasena = async () => {
 
-        // Validaciones
-        const { contrasena, confirmacion_contrasena } = form;
+        try {
+            // Validaciones
+            const { contrasena, confirmacion_contrasena } = form;
 
-        if (!contrasena || !confirmacion_contrasena) return Mensaje_Toast.error("Todos los campos son obligatorios");
-        if (contrasena.length < 5) return Mensaje_Toast.error("La contraseña debe tener minimo 5 caracteres");
-        if (contrasena !== confirmacion_contrasena) return Mensaje_Toast.error("Las contraseñas no coinciden");
+            if (!contrasena || !confirmacion_contrasena) return Mensaje_Toast.error("Todos los campos son obligatorios");
+            if (contrasena.length < 5) return Mensaje_Toast.error("La contraseña debe tener minimo 5 caracteres");
+            if (contrasena !== confirmacion_contrasena) return Mensaje_Toast.error("Las contraseñas no coinciden");
 
-        const res = await fetch('http://35.174.135.238/usuarios/restablecer_contrasena', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(form)
-        });
-        
-        const data = await res.json();
+            const res = await fetch('http://35.174.135.238/usuarios/restablecer_contrasena', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(form)
+            });
+            
+            const data = await res.json();
 
-        if(!data.success) return Mensaje_Toast.info(data.message);
+            if(!data.success) return Mensaje_Toast.info(data.message);
 
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }],
-        });
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "Login" }],
+            });
+        } catch (error) {
+            console.error('Error restableciendo la contraseña:', error);
+            Mensaje_Toast.error('No se pudo restablecer la contraseña');
+        }
     }
 
 

@@ -4,7 +4,7 @@ import Texto from "./Texto";
 import estilos_prueba_chatbot from "./css/prueba_chatbot_css";
 import LottieView from 'lottie-react-native';
 
-const Prueba_ChatBot = ({setCambiar_tamano}: any) => {
+const Prueba_ChatBot = ({setCambiar_tamano, onIntencion }: any) => {
 
     // ================= Configuracion para el tamaño y scroll de la caja de conversacion =================
     const { height } = useWindowDimensions();
@@ -33,8 +33,11 @@ const Prueba_ChatBot = ({setCambiar_tamano}: any) => {
 
     const enviar = () => {
         if (texto.trim() !== "") {
-            const intencion = intenciones[texto.trim().toLowerCase()];
+            const intencion_key = texto.trim().toLowerCase(); 
+            const intencion = intenciones[intencion_key];
             const respuesta = intencion ?? "No entendí muy bien, ¿puedes intentar con otra palabra?";
+
+            if (onIntencion) onIntencion(intencion_key); 
 
             setConversacion(prev => [
                 ...prev,

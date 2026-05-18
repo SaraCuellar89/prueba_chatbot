@@ -53,31 +53,35 @@ export default function Registro({ navigation }: any) {
 
   // Funcion para enviar los datos a la bbdd
   const Registrar_Usuario = async () => {
+    try {
+      // Validaciones
+      const { nombre_usuario, correo, contrasena, confirmacion_contrasena, avatar } = form;
+      const emailRegex = /^[^@\s]+@[^@\s]+\.(com)$/;
 
-    // Validaciones
-    const { nombre_usuario, correo, contrasena, confirmacion_contrasena, avatar } = form;
-    const emailRegex = /^[^@\s]+@[^@\s]+\.(com)$/;
+      if (!nombre_usuario || !correo || !contrasena || !confirmacion_contrasena || !avatar) return Mensaje_Toast.error("Todos los campos son obligatorios");
+      if (nombre_usuario.length < 5) return Mensaje_Toast.error("El nombre de usuario debe tener minimo 5 caracteres"); 
+      if (!emailRegex.test(correo)) return Mensaje_Toast.error("Correo invalido");
+      if (contrasena.length < 5) return Mensaje_Toast.error("La contraseña debe tener minimo 5 caracteres");
+      if (contrasena !== confirmacion_contrasena) return Mensaje_Toast.error("Las contraseñas no coinciden");
 
-    if (!nombre_usuario || !correo || !contrasena || !confirmacion_contrasena || !avatar) return Mensaje_Toast.error("Todos los campos son obligatorios");
-    if (nombre_usuario.length < 5) return Mensaje_Toast.error("El nombre de usuario debe tener minimo 5 caracteres"); 
-    if (!emailRegex.test(correo)) return Mensaje_Toast.error("Correo invalido");
-    if (contrasena.length < 5) return Mensaje_Toast.error("La contraseña debe tener minimo 5 caracteres");
-    if (contrasena !== confirmacion_contrasena) return Mensaje_Toast.error("Las contraseñas no coinciden");
+      // Envio de los datos
+      const res = await fetch('http://35.174.135.238/usuarios/registrar', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(form)
+      });
 
-    // Envio de los datos
-    const res = await fetch('http://35.174.135.238/usuarios/registrar', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(form)
-    });
+      const data = await res.json();
 
-    const data = await res.json();
+      if(data.success === false) return Mensaje_Toast.info(data.message);
 
-    if(data.success === false) return Mensaje_Toast.info(data.message);
-
-    navigation.navigate("Login", { registro_exitoso: true });
+      navigation.navigate("Login", { registro_exitoso: true });
+    } catch (error) {
+      console.error('Error registrando al usuario:', error);
+      Mensaje_Toast.error('No se pudo completar el registro');
+    }
   }
 
 

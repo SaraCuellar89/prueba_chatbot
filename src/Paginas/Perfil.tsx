@@ -66,18 +66,23 @@ const Perfil = ({ navigation, route }: any) => {
     useFocusEffect(
         useCallback(() => {
             const Obtener_Todos_Mis_Platos = async () => {
-            const res = await fetch('http://35.174.135.238/publicaciones/todas_usuario', {
-                method: 'GET',
-                headers: {
-                'Authorization': `Bearer ${usuario.token}`
+                try {
+                    const res = await fetch('http://35.174.135.238/publicaciones/todas_usuario', {
+                        method: 'GET',
+                        headers: {
+                        'Authorization': `Bearer ${usuario.token}`
+                        }
+                    });
+
+                    const data = await res.json();
+
+                    if(!data.success) return Mensaje_Toast.info(data.message);
+
+                    setMis_platos(data.data);
+                } catch (error) {
+                    console.error('Error obteniendo los platos:', error);
+                    Mensaje_Toast.error('No se pudo obtener los platos');
                 }
-            });
-
-            const data = await res.json();
-
-            if(!data.success) return Mensaje_Toast.info(data.message);
-
-            setMis_platos(data.data);
             };
 
             Obtener_Todos_Mis_Platos();
@@ -97,20 +102,25 @@ const Perfil = ({ navigation, route }: any) => {
     const [id_publicacion, setId_publicacion] = useState<number | null>(null);
 
     const Eliminar_Publicacion = async (id:number) => {
-        const res = await fetch(`http://35.174.135.238/publicaciones/eliminar/${id}`, {
-        method: "DELETE",
-        headers: {
-            'Authorization': `Bearer ${usuario.token}`
+        try {
+            const res = await fetch(`http://35.174.135.238/publicaciones/eliminar/${id}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${usuario.token}`
+            }
+            });
+
+            const data = await res.json();
+            
+            if(!data.success) return Mensaje_Toast.info(data.message);
+
+            setMis_platos(prev => prev.filter(p => p.id_publicacion !== id));
+
+            Mostrar_Notificacion("Publicación eliminada");
+        } catch (error) {
+            console.error('Error eliminando el plato:', error);
+            Mensaje_Toast.error('No se pudo eliminar el plato');
         }
-        });
-
-        const data = await res.json();
-        
-        if(!data.success) return Mensaje_Toast.info(data.message);
-
-        setMis_platos(prev => prev.filter(p => p.id_publicacion !== id));
-
-        Mostrar_Notificacion("Publicación eliminada");
     }
 
 
