@@ -65,7 +65,7 @@ const Formu_Inicio = ({navigation, form, handleChange, mostrar_contrasena, setMo
 
       {/* --- Boton para Iniciar Sesion con Google --- */}
       <TouchableOpacity style={estilo_formu_inicio_sesion_css.googleBtn} onPress={Iniciar_Sesion_Google}>
-        <Texto>Continuar con Google</Texto>
+        <Texto style={estilo_formu_inicio_sesion_css.texto_googleBtn}>Continuar con Google</Texto>
       </TouchableOpacity>
 
       {/* --- Boton para ir a la pantalla de registro --- */}

@@ -47,7 +47,23 @@ export default function Configuracion({navigation, route}: any) {
   // ================= Funciones y estados para cerrar sesion =================
   const Cerrar_Sesion = async () => {
     try {    
+        const fcm_token = await AsyncStorage.getItem("fcm_token");
+        const usuario = await AsyncStorage.getItem("usuario");
+        const { token } = JSON.parse(usuario!);
+
+        if (fcm_token) {
+            await fetch('http://35.174.135.238/tokenFCM/eliminar', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ fcm_token })
+            });
+        }
+
         await AsyncStorage.removeItem("usuario");
+        await AsyncStorage.removeItem("fcm_token");
         
         setUsuario(null); // limpia el contexto
 

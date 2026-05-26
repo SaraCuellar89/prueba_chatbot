@@ -23,6 +23,7 @@ const estilos_header_perfil = StyleSheet.create({
     nombre_usuario: {
         fontFamily: "JetBrainsMono_700Bold",
         fontSize: 20,
+        flexShrink: 1
     },
     foto_perfil: {
         width: 80,

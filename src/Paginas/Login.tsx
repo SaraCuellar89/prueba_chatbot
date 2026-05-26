@@ -77,6 +77,8 @@ export default function Login({ navigation, route }: any) {
       const token_fcm = await obtener_token_fcm();
 
       if (token_fcm) {
+        await AsyncStorage.setItem('fcm_token', token_fcm); 
+
         await fetch('http://35.174.135.238/tokenFCM/guardar', {
           method: 'POST',
           headers: {
@@ -133,6 +135,8 @@ export default function Login({ navigation, route }: any) {
       const token_fcm = await obtener_token_fcm();
 
       if (token_fcm) {
+        await AsyncStorage.setItem('fcm_token', token_fcm); 
+        
         await fetch('http://35.174.135.238/tokenFCM/guardar', {
           method: 'POST',
           headers: {
@@ -151,8 +155,10 @@ export default function Login({ navigation, route }: any) {
           routes: [{ name: "Chatbot" }],
         });
       }  
-    } catch (error) {
-      console.error('Error iniciando sesion (google):', error);
+    } catch (error: any) {
+      console.error('Codigo de error:', error.code);
+      console.error('Mensaje:', error.message);
+      console.error('Error completo:', JSON.stringify(error));
       Mensaje_Toast.error('No se pudo iniciar sesion con google');
     }
   }

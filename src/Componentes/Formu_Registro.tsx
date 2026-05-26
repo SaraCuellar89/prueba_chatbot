@@ -6,7 +6,7 @@ import Texto from "./Texto";
 import estilo_formu_inicio_sesion_css from "./css/formu_inicio_sesion_css"
 import estilos_global from "../estilos_global";
 
-const Formu_Registro = ({avatar, onAbrirAvatares, form, handleChange, mostrar_contrasena, setMostrar_contrasena, mostrar_confirmar_contrasena, setMostrar_confirmar_contrasena, Registrar_Usuario}: any) => {
+const Formu_Registro = ({avatar, onAbrirAvatares, form, handleChange, mostrar_contrasena, setMostrar_contrasena, mostrar_confirmar_contrasena, setMostrar_confirmar_contrasena, Registrar_Usuario, Registrar_Google}: any) => {
 
   return (
     <View style={estilo_formu_inicio_sesion_css.content}>
@@ -121,6 +121,11 @@ const Formu_Registro = ({avatar, onAbrirAvatares, form, handleChange, mostrar_co
         </TouchableOpacity>
 
       </View>
+
+      {/* --- Boton para Iniciar Sesion con Google --- */}
+      <TouchableOpacity style={estilo_formu_inicio_sesion_css.googleBtn} onPress={Registrar_Google}>
+        <Texto style={estilo_formu_inicio_sesion_css.texto_googleBtn}>Continuar con Google</Texto>
+      </TouchableOpacity>
 
     </View>
   );

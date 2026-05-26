@@ -96,7 +96,7 @@ export default function Editar_Cuenta({ navigation }: any) {
       if (isNaN(edadNum) || isNaN(pesoNum) || isNaN(alturaNum)) return Mensaje_Toast.error("Solo se permiten valores numéricos");
       if (edadNum < 10 || edadNum > 120) return Mensaje_Toast.error("Edad fuera de rango válida (10-120)");
       if (pesoNum < 20 || pesoNum > 300) return Mensaje_Toast.error("Peso fuera de rango válido (20-300 kg)");
-      if (alturaNum < 0.5 || alturaNum > 2.5) return Mensaje_Toast.error("Altura fuera de rango válida (0.50 - 2.50 m)");
+      if (alturaNum < 130 || alturaNum > 250) return Mensaje_Toast.error("Altura fuera de rango válida (130 - 250 cm)");
 
       // Envio de los datos
       const res = await fetch('http://35.174.135.238/usuarios/editar_cuenta', {
