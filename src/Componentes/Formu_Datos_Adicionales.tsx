@@ -47,7 +47,7 @@ const Formu_Datos_Adicionales = ({abrir_sexo, setAbrir_sexo, sexo_value, setSexo
                 <View style={estilo_formu_inicio_sesion_css.contenedor_input}>
                     <Texto style={estilo_formu_inicio_sesion_css.texto_label}>Altura</Texto>
                     <TextInput 
-                        placeholder="Ej: 1.70" 
+                        placeholder="Ej: 170" 
                         placeholderTextColor={"grey"} 
                         style={[estilos_global.caja_input]}
                         value={form.altura}
